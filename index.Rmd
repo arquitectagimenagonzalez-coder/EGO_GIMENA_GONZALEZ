@@ -1,0 +1,138 @@
+---
+title: "ESTUDIO G.G"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+ESTADO GENERAL DEL PROYECTO
+===========================
+
+
+
+
+
+
+
+
+
+
+
+
+Column {data-width=150}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+
+```
+
+Column {data-width=850}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
+
+cronograma de desembolso
+========================
+
+* subcontratistas
+* internos
+* retrasos
+* recursos de obra
+
+|EMPRESA| TAREA|
+|-------|------|
+|CIMADERA| TIRANTES DE TECHO|
+|HIDROBOMBAS| SANITARIOS|
+|TERMOOBRAS| TERMOMECANICA|
+
+
+
+
+
+
+
+grado de avance 
+===============
+
+```{r}
+library(ggplot2)
+library(dplyr) # Para la manipulación de datos, útil para el cálculo acumulado
+
+# 1. Preparación de los datos
+meses <- c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
+
+# Avance Teórico (100/12 para cada mes)
+avance_teorico_mensual <- 100 / 12
+avance_teorico <- rep(avance_teorico_mensual, 12)
+
+# Avance Real (se usan los 12 primeros valores del vector que proporcionaste)
+avance_real <- c(20, 5, 15, 30, 8, 45, 6, 10, 35, 25, 0, 0) 
+# Nota: Solo se usan 12 valores para los 12 meses. Los valores 0% y 0% extra que mencionaste se omiten.
+
+# Crear un data frame
+datos_avance <- data.frame(
+  Mes = factor(meses, levels = meses), # Asegura el orden correcto
+  Teorico = avance_teorico,
+  Real = avance_real
+)
+
+# 2. Reestructurar los datos para ggplot (formato 'largo')
+datos_largo <- datos_avance %>%
+  tidyr::pivot_longer(
+    cols = c(Teorico, Real),
+    names_to = "Tipo_Avance",
+    values_to = "Porcentaje"
+  )
+
+# 3. Creación del Gráfico de Barras Agrupadas con ggplot2
+grafico_avance <- ggplot(datos_largo, aes(x = Mes, y = Porcentaje, fill = Tipo_Avance)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = c("Teorico" = "#4C72B0", "Real" = "#DD8452")) + # Colores personalizados
+  labs(
+    title = "Avance Mensual de Obra: Teórico vs. Real",
+    x = "Mes",
+    y = "Porcentaje de Avance Mensual (%)",
+    fill = "Tipo de Avance"
+  ) +
+  theme_minimal() + # Estilo limpio
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+# 4. Mostrar el gráfico
+print(grafico_avance)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
